@@ -3,7 +3,7 @@ import requests, json
 time_start="1357880865185"
 end_time="1357880943469"
 
-job_list_url = "http://152.7.99.40:19888/ws/v1/history/mapreduce/jobs"
+job_list_url = "http://152.7.99.67:19888/ws/v1/history/mapreduce/jobs"
 job_list_json = requests.get(job_list_url)
 
 #job_list_query_url = job_list_url  + "?startedTimeBegin="+time_start+"&startedTimeEnd="+end_time
@@ -25,7 +25,10 @@ for job in job_list_json.json()["jobs"]["job"]:
 		continue
 	task_list_per_job_url = job_list_url + "/" + job["id"] + "/tasks"
 	task_list_per_job_json = requests.get(task_list_per_job_url)
-	#print task_list_per_job_url
+	print task_list_per_job_url
+	if not ("tasks" in task_list_per_job_json.json()):
+		print "Exception"
+		continue
 	#print task_list_per_job_json.json()
 	for task in task_list_per_job_json.json()["tasks"]["task"]:
 		task_list_url = task_list_per_job_url + "/" + task["id"]
@@ -60,7 +63,7 @@ startTime = min(reduce(min, mapStartTime.values()),
 endTime = max(reduce(max, mapEndTime.values()),
               reduce(max, reduceEndTime.values()))
 
-print startTime, endTime
+#print startTime, endTime
 for t in range(startTime, endTime):
 	runningMaps[t] = 0
  	shufflingReduces[t] = 0
